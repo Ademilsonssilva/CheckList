@@ -48,6 +48,15 @@
 				<div class="row justify-content-md-center">
 					<div class="col-md-6">
 						<div class="form-group">
+							<label for="nome">Nome</label>
+							<input type="text" id="nome" class="form-control"placeholder="Nome">
+						</div>
+					</div>
+				</div>
+				
+				<div class="row justify-content-md-center">
+					<div class="col-md-6">
+						<div class="form-group">
 							<label for="email">Email</label>
 							<input type="text" id="email" class="form-control"placeholder="Email">
 						</div>
@@ -111,6 +120,11 @@
 							window.location.href = 'base.html';
 						}
 					});
+					
+					
+					var uid = firebase.auth().currentUser.uid;
+					firebase.database().ref('users/' + uid ).set({nome: $('#nome')});
+					
 
 			 	}).catch(function(error) {
 					
@@ -140,7 +154,9 @@
 						type: 'warning',	
 				  	});
 		 	
-				});				 
+				});			
+
+				
 
 			})
 
