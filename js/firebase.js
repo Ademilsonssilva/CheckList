@@ -14,4 +14,35 @@ var database = firebase.database();
 
 var obj = [0,1,2,3];
 
-database.ref('/users').push(obj);
+
+var key = firebase.database().ref('users/').push({
+    username: 'Luiz',
+    email: 'luiz@actuary.com.br',
+    profile_picture : 'img/photo001'
+  });
+  
+  
+//database.ref('/users').push(obj);
+
+
+/* firebase.auth().createUserWithEmailAndPassword('luiz@actuary.com.br', '123456').catch(function(error) {
+  // Handle Errors here.
+  var errorCode = error.code;
+  var errorMessage = error.message;
+  // ...
+});
+ */
+
+
+function logar(){
+
+	var email = $('#user').val();
+	var password = $('#pass').val();
+
+	firebase.auth().signInWithEmailAndPassword(email, password).catch(function(error) {
+	  // Handle Errors here.
+	  var errorCode = error.code;
+	  var errorMessage = error.message;
+	  // ...
+	});
+}
