@@ -15,11 +15,11 @@ var database = firebase.database();
 var obj = [0,1,2,3];
 
 
-var key = firebase.database().ref('users/').push({
+/*var key = firebase.database().ref('users/').push({
     username: 'Luiz',
     email: 'luiz@actuary.com.br',
     profile_picture : 'img/photo001'
-  });
+  });*/
   
   
 //database.ref('/users').push(obj);

@@ -27,7 +27,7 @@ $('#cadastrar').on('click', function () {
 					
 					
 					var uid = firebase.auth().currentUser.uid;
-					firebase.database().ref('users/' + uid ).set({nome: $('#nome')});
+					firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});
 					
 
 			 	}).catch(function(error) {
