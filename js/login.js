@@ -31,6 +31,8 @@ $('#logar').on('click', function () {
 		/*var uid = firebase.auth().currentUser.uid;
 		firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});*/
 		
+		//alert(firebase.auth().currentUser.uid)
+		
 
 	}).catch(function(error) {
 		

@@ -1,4 +1,7 @@
 // Initialize Firebase
+
+//alert('firebase.js')
+
 var config = {
  apiKey: "AIzaSyAP9WB5CPcOS13NiwXvwN8pHXmzdIwtuC8",
  authDomain: "checklist-9c6f7.firebaseapp.com",
@@ -12,7 +15,8 @@ firebase.initializeApp(config);
   // Get a reference to the database service
 var database = firebase.database();
 
-var obj = [0,1,2,3];
+//var obj = [0,1,2,3];
+
 
 
 /*var key = firebase.database().ref('users/').push({
