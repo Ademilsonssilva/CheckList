@@ -23,13 +23,15 @@ $('#cadastrar').on('click', function () {
 			toast: true,
 			timer: 2500,
 			onClose: () => {
-				window.location.href = 'base.html';
+				window.location.href = 'home.html';
 			}
 		});
 		
 		
 		var uid = firebase.auth().currentUser.uid;
-		firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});
+		
+		firebase.database().ref('pessoa/' + uid ).set({nome: $('#nome').val()});
+		firebase.database().ref('users-coach/' + uid ).set(true);
 		
 
 	}).catch(function(error) {

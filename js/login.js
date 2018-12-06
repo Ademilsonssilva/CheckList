@@ -23,7 +23,7 @@ $('#logar').on('click', function () {
 			toast: true,
 			timer: 2500,
 			onClose: () => {
-				window.location.href = 'base.html';
+				window.location.href = 'home.html';
 			}
 		});
 		
@@ -40,14 +40,17 @@ $('#logar').on('click', function () {
 		console.info(error.code);
 
 		switch(error.code) {
-			case 'auth/email-already-in-use': 
-				mensagem = 'O email informado já existe';
+			case 'auth/user-not-found': 
+				mensagem = 'O usuário informado não existe';
 				break;
-			case 'auth/weak-password':
-				mensagem = 'A senha deve ter pelo menos 6 caracteres';
+			case 'auth/wrong-password':
+				mensagem = 'A senha incorreta';
 				break;
 			case 'auth/invalid-email':
 				mensagem = 'O email informado não é válido';
+				break;
+			case 'auth/user-disabled':
+				mensagem = 'O usuário esta bloqueado';
 				break;
 			default: 
 				mensagem = 'Ocorreu um erro inesperado!';
