@@ -1,9 +1,9 @@
-$('#cadastrar').on('click', function () {
+$('#logar').on('click', function () {
 
 	email = $('#email').val();
 	pass = $('#pass').val();
-
-	if(email == '' || pass == '') {
+	
+	if(email == "" || pass == "") {
 
 		swal({
 			title: 'Ops',
@@ -15,10 +15,10 @@ $('#cadastrar').on('click', function () {
 		return;
 	}
 
-	usuario = firebase.auth().createUserWithEmailAndPassword(email, pass).then(function () {
+	usuario = firebase.auth().signInWithEmailAndPassword(email, pass).then(function () {
 
 		swal({
-			html: 'Usuário cadastrado com sucesso!',
+			html: 'Login efetuado com sucesso!',
 			type: 'success',
 			toast: true,
 			timer: 2500,
@@ -28,8 +28,8 @@ $('#cadastrar').on('click', function () {
 		});
 		
 		
-		var uid = firebase.auth().currentUser.uid;
-		firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});
+		/*var uid = firebase.auth().currentUser.uid;
+		firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});*/
 		
 
 	}).catch(function(error) {
@@ -62,4 +62,4 @@ $('#cadastrar').on('click', function () {
 
 	});			
 
-})
+});
