@@ -38,20 +38,38 @@ $('#cadastrar').on('click', function () {
 					
 					
 					myUserId = firebase.auth().currentUser.uid;
-		
-		 
-					// firebase.database().ref('coach/' + myUserId + '/clientes').once("value").then(function(snapshot){
-					// 	$('#clientes').html("");
-					// 	snapshot.forEach(function(child){
-					// 		$('#clientes').append("<tr>");
-					// 	    $('#clientes').append("<td>" + child.val().nome + "</td>");
-					// 	    $('#clientes').append("<td>" + child.val().email + "</td>");
-					// 	    $('#clientes').append("<td>" + child.val().telefone + "</td>");
-					// 	    $('#clientes').append("</tr>");
-					// 	    //alert( child.val().nome)
+				
+					var dados = [];
+					
+					firebase.database().ref('coach/' + myUserId + '/clientes').orderByChild("nome").once("value").then(function(snapshot){
+					 	//$('#clientes').html("");
+					 	snapshot.forEach(function(child){
+							
+							dados.push(child.val());					
 						  
-					// 	});
-                    // })
+					 	});
+						
+						$("#table_clientes").jsGrid({
+							width: "100%",
+							height: "auto",
+					
+							// inserting: true,
+							// editing: true,
+							sorting: true,
+							paging: true,
+							pageSize: 10,
+					
+							data: dados,
+					
+							fields: [
+								{ name: "nome", type: "text", width: 150, validate: "required" },
+								{ name: "email", type: "text", width: 150 },
+								{ name: "telefone", type: "text", width: 200 },
+								// { name: "Married", type: "checkbox", title: "Is Married", sorting: false },
+							]
+						});
+					});
+					
 					
                 swal({
                     html: 'Usuário cadastrado com sucesso!',

@@ -148,7 +148,7 @@
 		
 			var dados = [];
 
-			firebase.database().ref('coach/' + myUserId + '/clientes').once("value").then(function(snapshot){
+			firebase.database().ref('coach/' + myUserId + '/clientes').orderByChild("nome").once("value").then(function(snapshot){
 				
 				snapshot.forEach(function(child){
 
