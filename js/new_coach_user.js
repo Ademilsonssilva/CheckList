@@ -26,9 +26,9 @@ $('#cadastrar').on('click', function () {
            
             //firebase.database().ref('coach/' + user.uid ).once('value').then(function(snapshot) {
 
-            firebase.auth().createUserWithEmailAndPassword(email, pass).then(function () {
+           // firebase.auth().createUserWithEmailAndPassword(email, pass).then(function () {
 
-                firebase.database().ref('coach/' + user.uid ).set({
+                firebase.database().ref('coach/' + user.uid + '/clientes' ).push({
                     
                     nome: $('#nome').val(),
                     telefone: $('#telefone').val(),
@@ -43,9 +43,9 @@ $('#cadastrar').on('click', function () {
                     timer: 2500,
                 })
 
-            }).catch(function (error) {
+            /*}).catch(function (error) {
 
-            });
+            });*/
               
             //$('#name_user').html(snapshot.val().nome);
 
