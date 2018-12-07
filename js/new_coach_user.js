@@ -40,18 +40,18 @@ $('#cadastrar').on('click', function () {
 					myUserId = firebase.auth().currentUser.uid;
 		
 		 
-					firebase.database().ref('coach/' + myUserId + '/clientes').once("value").then(function(snapshot){
-						$('#clientes').html("");
-						snapshot.forEach(function(child){
-							$('#clientes').append("<tr>");
-						  $('#clientes').append("<td>" + child.val().nome + "</td>");
-						  $('#clientes').append("<td>" + child.val().email + "</td>");
-						  $('#clientes').append("<td>" + child.val().telefone + "</td>");
-						  $('#clientes').append("</tr>");
-						  //alert( child.val().nome)
+					// firebase.database().ref('coach/' + myUserId + '/clientes').once("value").then(function(snapshot){
+					// 	$('#clientes').html("");
+					// 	snapshot.forEach(function(child){
+					// 		$('#clientes').append("<tr>");
+					// 	    $('#clientes').append("<td>" + child.val().nome + "</td>");
+					// 	    $('#clientes').append("<td>" + child.val().email + "</td>");
+					// 	    $('#clientes').append("<td>" + child.val().telefone + "</td>");
+					// 	    $('#clientes').append("</tr>");
+					// 	    //alert( child.val().nome)
 						  
-						});
-					})
+					// 	});
+                    // })
 					
                 swal({
                     html: 'Usuário cadastrado com sucesso!',
