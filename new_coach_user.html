@@ -39,56 +39,83 @@
 			
         <div class="container" style='padding-top:100px'>
             
-            <div class="row justify-content-md-center">
-                <h2>Novo usuário</h2>	
-            </div>
-            
-            <br>
+				<div class='row'>
+					<div class='col-md-5'>
+					
+						<div class="row justify-content-md-center">
+							 <h2>Novo usuário</h2>	
+						</div>
+						
+						<br>
 
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="nome">Nome</label>
-                        <input type="text" id="nome" class="form-control"placeholder="Nome">
-                    </div>
-                </div>
-            </div>
+						<div class="row justify-content-md-center">
+							 <div class="col-md-6">
+								  <div class="form-group">
+										<label for="nome">Nome</label>
+										<input type="text" id="nome" class="form-control"placeholder="Nome">
+								  </div>
+							 </div>
+						</div>
 
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="telefone">Telefone</label>
-                        <input type="text" id="telefone" class="form-control" placeholder="Telefone">
-                    </div>
-                </div>
-            </div>            
-            
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="email">Email</label>
-                        <input type="text" id="email" class="form-control"placeholder="Email">
-                    </div>
-                </div>
-            </div>
+						<div class="row justify-content-md-center">
+							 <div class="col-md-6">
+								  <div class="form-group">
+										<label for="telefone">Telefone</label>
+										<input type="text" id="telefone" class="form-control" placeholder="Telefone">
+								  </div>
+							 </div>
+						</div>            
+						
+						<div class="row justify-content-md-center">
+							 <div class="col-md-6">
+								  <div class="form-group">
+										<label for="email">Email</label>
+										<input type="text" id="email" class="form-control"placeholder="Email">
+								  </div>
+							 </div>
+						</div>
 
-            <div class="row justify-content-md-center">
-                <div class="col-md-6">
-                    <div class="form-group">
-                        <label for="pass">Senha</label>
-                        <input type="password" id="pass" class="form-control"placeholder="Senha">
-                    </div>
-                </div>
-            </div>
+						<div class="row justify-content-md-center">
+							 <div class="col-md-6">
+								  <div class="form-group">
+										<label for="pass">Senha</label>
+										<input type="password" id="pass" class="form-control"placeholder="Senha">
+								  </div>
+							 </div>
+						</div>
 
-            <br>
+						<br>
 
-            <div class="row justify-content-center">
-                <div class="col-6" style="text-align: center;">
-                    <button id="cadastrar" class="btn btn-info">Cadastrar!</button>
-                </div>
-            </div>
+						<div class="row justify-content-center">
+							 <div class="col-6" style="text-align: center;">
+								  <button id="cadastrar" class="btn btn-info">Cadastrar!</button>
+							 </div>
+						</div>
+					</div>
+					<div class='col-md-7'>
+					
+						<div class="row justify-content-md-center">
+							 <h2>Lista de Usuários</h2>	
+						</div>
+						
+						<br>
+						<table class='table'>
+							<thead>
+								<tr>
+									<th>Nome</th>
+									<th>Email</th>
+									<th>Tel.</th>
+								</tr>
+							</thead>
+							<tbody id='clientes'>
+								
+							</tbody>
+							
+						</table>
 
+						
+					</div>
+				</div>
         </div>
 		
 	    <!-- Optional JavaScript -->
@@ -102,6 +129,38 @@
 		<script src="js/firebase.js"></script>
         <script src="js/sessao.js"></script>
 		<script src="js/new_coach_user.js"></script>
+		
+		<script>
+		
+		
+		
+		
+		firebase.auth().onAuthStateChanged(function(user) {
+		  
+        if (user) {
+           myUserId = firebase.auth().currentUser.uid;
+		
+			 firebase.database().ref('coach/' + myUserId + '/clientes').once("value").then(function(snapshot){
+				
+				snapshot.forEach(function(child){
+					$('#clientes').append("<tr>");
+				  $('#clientes').append("<td>" + child.val().nome + "</td>");
+				  $('#clientes').append("<td>" + child.val().email + "</td>");
+				  $('#clientes').append("<td>" + child.val().telefone + "</td>");
+				  $('#clientes').append("</tr>");
+				  //alert( child.val().nome)
+				  
+				});
+			})
+		 
+        } else {
+         
+            window.location.href = 'login.html';
+            
+        }
+
+    });
+		</script>
 
   	</body>
 </html>
