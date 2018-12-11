@@ -59,9 +59,7 @@
 					</select>
 				</div>
 				
-				
 				<div class='row ' style='padding-top:5px'>
-				
 				
 			<table class="table table-sm" border="1">
 			
@@ -87,101 +85,83 @@
 		<script src="js/new_coach_user.js"></script>
 		
 		<script>
-			$('#meses').on('click', function(){
-				
-			});
+			$('#meses').on('click', function(){});
 			
 			var myUserId;
 			
-			function marca(ev){
+			function marcaCheckList(ev){
 				var exp = ev.id.split("_");
 				
-				if($(ev).html() == ""){
-					
-					firebase.database().ref('users-cliente/' + myUserId + 
-													'/' + exp[0] +'/' + exp[1] + '/' + exp[2] + '/' + exp[3]).set(true);
-					
+				if($(ev).html() == ""){					
+					firebase.database().ref('users-cliente/' + myUserId + '/' + exp[0] +'/' + exp[1] + '/' + exp[2] + '/' + exp[3]).set(true);					
 					$(ev).html("x");
 				}
 				else{
-				firebase.database().ref('users-cliente/' + myUserId + 
-													'/' + exp[0] +'/' + exp[1] + '/' + exp[2] + '/' + exp[3]).set(false);
+					firebase.database().ref('users-cliente/' + myUserId + '/' + exp[0] +'/' + exp[1] + '/' + exp[2] + '/' + exp[3]).set(false);
 					$(ev).html("");
 				}
 			}
 			
 			firebase.auth().onAuthStateChanged(function(user) {
 			
-			if (user) {
-				
-				myUserId = firebase.auth().currentUser.uid;
-			
-				month = 11;
-				ano = 2018
-				
-				var anoSel = 2018;
-				var mesSel = 12;
-				
-				firebase.database().ref('users-cliente/' + firebase.auth().currentUser.uid).once('value').then(function(snap){
+				if (user) {
 					
-					if(snap.exists()){
-						alert('Exists')
-					}
-					else{
-						
-						firebase.database().ref('users-cliente/' +   firebase.auth().currentUser.uid + '/treinoperna/'+anoSel+'/'+mesSel ).set('');
-					}
-				});
+					myUserId = firebase.auth().currentUser.uid;
 				
-				var date = new Date(ano, month, 1);
-				var days = [];
-
-				$('#checklist' ).append('<tr>');	
-				$('#checklist' ).append("<th width='200px'>ITENS</th>");	
-				while (date.getMonth() === month && date.getDate() != 8) {
-				
-				
-					$('#checklist' ).append("<th ano="+ ano +" mes='" + month  +"' dia='" + (date.getDate())  +"'> "+ (date.getDate()) +" </th>");
-					days.push(date.getDate());
-					date.setDate(date.getDate() + 1);
-				
-				}
-				$('#checklist' ).append("</tr><tr>");
-		 
-				$('#checklist').append("<td width='50em'>perna</td>");	
-				
-				
-			
-				$('#checklist' ).append("</tr>");
-				
-				
-				firebase.database().ref('users-cliente/'+ myUserId+'/treinoperna/'+ anoSel).once("value").then(function(snapshot){
+					month = 11;
+					ano = 2018
 					
-					snapshot.forEach(function(child){
+					var anoSel = 2018;
+					var mesSel = 12;
+					
+					firebase.database().ref('users-cliente/' + firebase.auth().currentUser.uid).once('value').then(function(snap){
 						
-						for (var i = 0; i < days.length; i++) {
-							if(child.child(i+1).val()){
-								
-								teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);
-								
-								$('#checklist' ).append("<td onclick='marca(this)' id='" + teste + "'>x</td>");
-								
-							}
-							else{
-								teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);
-								
-								$('#checklist' ).append("<td onclick='marca(this)' id='" + teste + "'></td>");
-							}
+						if(!snap.exists()){
+							firebase.database().ref('users-cliente/' +   firebase.auth().currentUser.uid + '/treinoperna/'+anoSel+'/'+mesSel ).set('');
 						}
 					});
-				});				
-			
-			});
-        } else {
+					
+					var date = new Date(ano, month, 1);
+					var days = [];
+
+					$('#checklist' ).append('<tr>');	
+					$('#checklist' ).append("<th width='200px'>ITENS</th>");	
+					while (date.getMonth() === month && date.getDate() != 8) {
+									
+						$('#checklist' ).append("<th ano="+ ano +" mes='" + month  +"' dia='" + (date.getDate())  +"'> "+ (date.getDate()) +" </th>");
+						days.push(date.getDate());
+						date.setDate(date.getDate() + 1);
+					
+					}
+					$('#checklist').append("</tr><tr>");		 
+					$('#checklist').append("<td width='50em'>perna</td>");				
+					$('#checklist').append("</tr>");
+					
+					firebase.database().ref('users-cliente/'+ myUserId+'/treinoperna/'+ anoSel).once("value").then(function(snapshot){
+						
+						snapshot.forEach(function(child){
+							
+							for (var i = 0; i < days.length; i++) {
+								if(child.child(i+1).val()){
+									
+									teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
+									$('#checklist' ).append("<td onclick='marcaCheckList(this)' id='" + teste + "'>x</td>");
+									
+								}
+								else{
+								
+									teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
+									$('#checklist' ).append("<td onclick='marcaCheckList(this)' id='" + teste + "'></td>");
+								}
+							}
+						});
+					});
+				} 
+				else {
          
             //window.location.href = 'login.html';
             
-        }
+				}
 
     });
 		</script>
