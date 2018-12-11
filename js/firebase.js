@@ -13,7 +13,7 @@ var config = {
 firebase.initializeApp(config);
 
   // Get a reference to the database service
-var database = firebase.database();
+var fdb = firebase.database();
 
 //var obj = [0,1,2,3];
 

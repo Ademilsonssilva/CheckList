@@ -11,10 +11,11 @@
 		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
 		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
 		
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+		
     	<title>Firebase CheckList</title>
   	</head>
   	<body>
-		
 	
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
         	<a class="navbar-brand" href="#">CheckList</a>
@@ -43,14 +44,14 @@
         <div class="container" style='padding-top:100px'>
             <div class='row'>
 				
-					<div class='col-md-6'>
+					<div class='col-md-2'>
 				
 						<label>Ano</label>
-						<input class="form-control" id="field_ano" name="field_ano" type="number" maxlength="4"/>
+						<input class="form-control" id="field_ano" name="field_ano" type="number" value=2018 maxlength="4"/>
 					</div>
 				
-					<div class='col-md-6'>
-						<label>Mes</label>
+					<div class='col-md-4'>
+						<label>Mês</label>
 						<select id="field_meses" class="form-control" name="field_meses">
 							<option value='0'>JAN</option>
 							<option value='1'>FEV</option>
@@ -69,14 +70,18 @@
 					
 				</div>
 				
-				<div class='row ' style='padding-top:5px'>
-				
-			<table class="table table-sm" border="1">
-			
-				<tbody id='checklist'>
-				
-				</tbody>
-			</table>
+				<div class='row' style='padding-top:15px'>
+					
+				<table class="table table-sm " border="1">
+					
+					<thead id='headChecklist' class='table-dark'>
+					
+					</thead>
+					
+					<tbody id='checklist'>
+					
+					</tbody>
+				</table>
 			</div>
 		</div>
 		
@@ -96,8 +101,25 @@
 		
 		<script>
 			$('#field_meses').on('change', function(){
-				//alert($(this).val())
-				carregaChecklist("treinoperna", 2018,$(this).val());
+				$('#checklist').html("");
+				
+				field_meses = $(this).val();
+				
+				fdb.ref('itens').once('value').then(function(snapshot){
+					
+					//carregaChecklist(snapshot.key, $("#field_ano").val(),$(this).val());
+					
+					snapshot.forEach(function(child){
+					
+						//alert(child.key);
+						
+						carregaChecklist(child, $("#field_ano").val(),field_meses);
+						
+						
+					});
+				});
+				
+				
 			});
 			
 			var myUserId;
@@ -106,7 +128,7 @@
 				
 				if($(ev).html() == ""){					
 					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(true);					
-					$(ev).html("x");
+					$(ev).html("<span style='color:green' class='far fa-check-circle'></span>");
 				}
 				else{
 					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(false);
@@ -121,51 +143,59 @@
 			
 			function carregaChecklist(item, ano, mes){
 					
-					$('#checklist').html("");
+				var anoSel = parseInt(ano);
+				var mesSel = parseInt(mes) + 1;
+				//alert('users-cliente/' +  myUserId + '/'+item+'/'+anoSel+'/'+mesSel )
+				firebase.database().ref('users-cliente/' + myUserId).once('value').then(function(snap){
 					
-					var anoSel = ano;
-					var mesSel = parseInt(mes) + 1;
-					
-					firebase.database().ref('users-cliente/' + myUserId).once('value').then(function(snap){
+					if(!snap.exists()){
+						firebase.database().ref('users-cliente/' +  myUserId + '/'+item.key+'/'+anoSel+'/'+mesSel ).set('');
+					}else{
 						
-						if(!snap.exists()){
-							firebase.database().ref('users-cliente/' +  myUserId + '/'+item+'/'+anoSel+'/'+mesSel ).set('');
-						}else{
-							
-						}
-					});
-					
-					var date = new Date(anoSel, (mesSel - 1), 1);
-					
-					var days = [];
-
-					$('#checklist' ).append('<tr>');	
-					$('#checklist' ).append("<th width='200px'>ITENS</th>");	
-					while (date.getMonth() === (mesSel - 1) && date.getDate() != 8) {
-									
-						$('#checklist' ).append("<th ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'> "+ (date.getDate()) +" </th>");
-						days.push(date.getDate());
-						date.setDate(date.getDate() + 1);
-					
 					}
-					$('#checklist').append("</tr><tr>");		 
-					$('#checklist').append("<td width='50em'>perna</td>");				
-					$('#checklist').append("</tr>");
+				});
+				
+				var date = new Date(anoSel, (mesSel - 1), 1);
+				
+				var days = [];
+				
+				var trHeader = $("<tr></tr>");
+				
+				trHeader.append("<th width='150px'>ITENS</th>");	
+				while (date.getMonth() === (mesSel - 1) /* && date.getDate() != 8*/) {
+								
+					trHeader.append("<th  ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</th>");
+					days.push(date.getDate());
+					date.setDate(date.getDate() + 1);
+				
+				}
+				
+				$("#headChecklist").html(trHeader);
+				
+				var tBody = $("<tr></tr>");
+				
+				tBody.append("<td width='100px'>"+item.val().nome+"</td>");				
+				
+				firebase.database().ref('users-cliente/'+ myUserId+'/'+item.key+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){
 					
-					firebase.database().ref('users-cliente/'+ myUserId+'/'+item+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){
-						
-							
-						for (var i = 0; i < days.length; i++) {
-							if(snapshot.child(i+1).val()){									
-								//teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
-								$('#checklist' ).append(createTd('treinoperna', anoSel, mesSel, (i+1), 'x' ));									
-							}
-							else{
-								$('#checklist' ).append(createTd('treinoperna', anoSel, mesSel, (i+1), '' ));
-							}
+					for (var i = 0; i < days.length; i++) {
+						if(snapshot.child(i+1).val()){									
+							//teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
+							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green'  class='far fa-check-circle'></span>"));									
 						}
-						
-					});
+						else{
+							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
+						}
+					}
+					//$('#checklist').append("</tr>")
+					
+					
+				});
+				
+				
+				$("#checklist").append(tBody);
+				
+					
 			}
 			
 			firebase.auth().onAuthStateChanged(function(user) {
