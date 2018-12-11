@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  	<head>
+    	<!-- Required meta tags -->
+    	<meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    	<!-- Bootstrap CSS -->
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+		
+		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
+		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
+		
+    	<title>Firebase CheckList</title>
+  	</head>
+  	<body>
+		
+	
+        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        	<a class="navbar-brand" href="#">CheckList</a>
+	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+	          	<span class="navbar-toggler-icon"></span>
+	        </button>
+	        <div class="collapse navbar-collapse" id="navbarCollapse">
+	          	<ul class="navbar-nav mr-auto">
+	            	<li class="nav-item active">
+	             		<a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+	            	</li>
+	            	<li class="nav-item">
+	              		<a class="nav-link" id="logout" href="#">Logout</a>
+            		</li>
+	            	<li class="nav-item">
+	              		<a class="nav-link" href="new_coach_user.html">Usuários</a>
+	            	</li>
+	          	</ul>
+	          	<form class="form-inline mt-2 mt-md-0">
+	            	<input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
+	            	<button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+	          	</form>
+	        </div>
+      	</nav>
+			
+        <div class="container" style='padding-top:100px'>
+            
+			<table class="table" border="1">
+				<!--<thead>
+					<th>Itens</th>
+					<th>S</th>
+					<th>T</th>
+					<th>Q</th>
+					<th>Q</th>
+					<th>S</th>
+					<th>S</th>
+					<th>D</th>
+				</thead>	-->
+			
+				<tbody id='checklist'>
+				
+				</tbody>
+			</table>
+		</div>
+		
+		
+	    <!-- Optional JavaScript -->
+	    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+	    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+		 
+    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+		<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
+		<script src="js/firebase.js"></script>
+       <!-- <script src="js/sessao.js"></script>-->
+		<script src="js/new_coach_user.js"></script>
+		
+		<script>
+			month = 11;
+			ano = 2018
+     var date = new Date(ano, month, 1);
+     var days = [];
+
+	 $('#checklist' ).append('<tr>');	
+	$('#checklist' ).append("<td width='50em'>ITENS</td>");	
+     while (date.getMonth() === month) {
+		//alert(date.getDate())
+
+		$('#checklist' ).append("<td id='" + ( ano + "_" + month + "_" + date.getDate())   +"'>" + (date.getDate() ) + "</td>");
+        days.push(date.getDate());
+		date.setDate(date.getDate() + 1);
+		//alert(date.getMonth())
+
+	 }
+	 $('#checklist' ).append("</tr><tr>");
+	 
+
+	 $('#checklist').append("<td width='50em'>3 litros agua</td>");	
+
+	  for (var i = 0; i < days.length; i++) {
+        $('#checklist').append("<td>" + (i % 2 == 0 ? "x" : "") + "</td>");
+    }
+
+	 $('#checklist' ).append("</tr>");
+
+		
+		firebase.auth().onAuthStateChanged(function(user) {
+		  
+
+		
+
+        if (user) {
+           myUserId = firebase.auth().currentUser.uid;
+		
+			//alert(myUserId)
+			
+			firebase.database().ref('itens/');
+			
+			firebase.database().ref('itens/').orderByChild("nome").once("value").then(function(snapshot){
+				//$('#checklist').html("");
+				snapshot.forEach(function(child){
+					
+					//$('#checklist' ).append('<tr><td>' + child.val().nome + '</td>');
+					
+				});
+				
+		
+			});
+
+			// var ref = firebase.database().ref("coach/" + myUserId + '/clientes');
+
+			// // Attach an asynchronous callback to read the data at our posts reference
+			// ref.on("value", function(snapshot) {
+			// 	console.log(snapshot.val());
+			// }, function (errorObject) {
+			// 	console.log("The read failed: " + errorObject.code);
+			// });
+
+			// alert('entrou aqui');
+		 
+        } else {
+         
+            //window.location.href = 'login.html';
+            
+        }
+
+    });
+		</script>
+
+  	</body>
+</html>
