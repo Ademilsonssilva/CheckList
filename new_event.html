@@ -1,49 +1,11 @@
 <!doctype html>
 <html lang="en">
-  	<head>
-    	<!-- Required meta tags -->
-    	<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    	<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		
-		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-        <link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-		
-    	<title>Firebase CheckList</title>
-  	</head>
+    <script src="html_base/header.js"></script>
+
   	<body>
-		
-	
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        	<a class="navbar-brand" href="#">CheckList</a>
-	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-	          	<span class="navbar-toggler-icon"></span>
-	        </button>
-	        <div class="collapse navbar-collapse" id="navbarCollapse">
-	          	<ul class="navbar-nav mr-auto">
-						<li class="nav-item active">
-								<a class="nav-link" href="home.html">Home <span class="sr-only">(current)</span></a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" href="checklist.html">Hábitos</a>
-						</li>
-						<li class="nav-item">
-								<a class="nav-link" href="new_coach_user.html">Usuários</a>
-						</li>
-						
-						<li class="nav-item">
-							<a class="nav-link" href="new_event.html">Eventos</a>
-						</li>
-					
-					</ul>
-				
-					<a style="color: gray" id="logout" href="#">Logout</a>
-	          	
-	        </div>
-      	</nav>
+        
+        <script src="html_base/navbar.js"></script>
 			
         <div class="container" style='padding-top:100px'>
 
@@ -196,124 +158,10 @@
             </div>
                 
         </div>
+
+	    <script src="html_base/scripts_base.js"></script>
 		
-	    <!-- Optional JavaScript -->
-	    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		 
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-		<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-		<script src="js/firebase.js"></script>
-        <script src="js/sessao.js"></script>
-		<script src="js/new_coach_user.js"></script>
-		
-		<script>
-            $(document).ready(function () {
-
-                $('.dia').hide();
-
-                $('#todos_dias_semana').on('change', function () {
-
-                    if($(this).is(':checked')) {
-
-                        $('.dia').attr('checked', 'true');
-                        $('.dia').hide();
-
-                    }
-
-                    else {
-
-                        $('.dia').removeAttr('checked');
-                        $('.dia').show();
-
-                    }
-
-                })
-
-                $('#salvar').on('click', function () {
-
-                    if($('#nome').val() == '') {
-                        swal({
-                            title: 'Ops',
-                            html: 'Preencha o nome do evento',
-                            type: 'error',
-                        });
-                        return false;
-                    }
-
-                    evento = {
-                        nome: $('#nome').val(),
-                        descricao: $('#descricao').val(),
-                        ativo: $('#ativo').val() == 'sim' ? true : false,
-                    }
-
-                    dias = [];
-                    $('.dia_input').each(function () {
-                        if($(this).is(':checked')) {
-                            dias.push($(this).prop('id'));
-                        }
-                    });
-
-                    if(dias.length < 1) {
-                        dias = ['domingo', 'segunda', 'terca', 'quarta', 'quinta', 'sexta', 'sabado'];
-                    }
-
-                    evento.dias = dias;
-
-                    firebase.database().ref('itens').push(evento);
-
-                })
-
-                firebase.database().ref('itens').on("value", function(snapshot) {
-                    dados = [];
-                    snapshot.forEach(function (childSnapshot) {
-                        dados.push(childSnapshot);
-                    });
-
-                    montaTable(dados);
-
-                }, function (errorObject) {
-                    console.log("The read failed: " + errorObject.code);
-                });
-
-            })
-
-            function montaTable(array)
-            {
-                $('#table_body').html('');
-
-                for(i = 0; i < array.length; i++) {
-
-                    nome = array[i].val().nome;
-                    key  = array[i].key;
-
-                    tbody = `
-                        <tr>
-                            <td> ${nome} </td>
-                            <td> <button class='btn btn-danger btn-sm fas fa-trash' onclick='remover_evento($(this))' ev_key='${key}'> Remover</button> </td>
-                        </tr>
-                    `;
-
-                    $('#table_body').append(tbody);
-
-                }
-
-                if($('#table_body').html() == '') {
-                    $('#table_body').append('<tr><td colspan="2"><i>Nenhuma informação encontrada!</i></td></td>');
-                }
-                
-            }
-
-            function remover_evento(btn)
-            {
-                key = btn.attr('ev_key');
-
-                firebase.database().ref('itens/' + key).remove();
-            }
-		</script>
+		<script src="js/new_event.js"></script>
 
   	</body>
 </html>
