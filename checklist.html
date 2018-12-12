@@ -98,8 +98,10 @@
 			
 			function marcaCheckList(ev){
 				
+				urlCheckList = myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia');
+				
 				if($(ev).html() == ""){					
-					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(true, function(erro){
+					firebase.database().ref('users-cliente/' + urlCheckList).set(true, function(erro){
 						if(erro){
 							swal({
 								
@@ -126,7 +128,7 @@
 					$(ev).html("<span style='color:green' class='fas fa-check'></span>");
 				}
 				else{
-					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(false, function(erro){
+					firebase.database().ref('users-cliente/' + urlCheckList).set(false, function(erro){
 						if(erro){
 						
 							swal({
@@ -186,12 +188,13 @@
 				
 				trHeader.append("<th width='150px'>Hábito</th>");	
 				while (date.getMonth() === (mesSel - 1) /* && date.getDate() != 8*/) {
-								
+					
 					trHeader.append("<td ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</td>");
 					days.push(date.getDate());
 					date.setDate(date.getDate() + 1);
 				
 				}
+				
 				
 				$("#headChecklist").html(trHeader);
 				
@@ -215,6 +218,9 @@
 				
 				$("#checklist").append(tBody);
 					
+				//$("td[dia='"+diaDeHoje.getDate()+"']").css('background','#bbb');
+				$("td[dia='"+diaDeHoje.getDate()+"']").css('color','gold');
+				$("td[dia='"+diaDeHoje.getDate()+"']").css('font-weight','bold');
 			}
 			
 			firebase.auth().onAuthStateChanged(function(user) {
