@@ -42,46 +42,55 @@
       	</nav>
 			
         <div class="container" style='padding-top:100px'>
-            <div class='row'>
+			<div class='row'>
+
+				<div class='col-sm-12'>
+					<h2>CheckList de Hábitos</h2>
+
+				</div>
+			</div>
+			
+			<div class='row'>
 				
-					<div class='col-md-2'>
-				
-						<label>Ano</label>
-						<input class="form-control" id="field_ano" name="field_ano" type="number" value=2018 maxlength="4"/>
-					</div>
-				
-					<div class='col-md-4'>
-						<label>Mês</label>
-						<select id="field_meses" class="form-control" name="field_meses">
-							<option value='0'>JAN</option>
-							<option value='1'>FEV</option>
-							<option value='2'>MAR</option>
-							<option value='3'>ABR</option>
-							<option value='4'>MAI</option>
-							<option value='5'>JUN</option>
-							<option value='6'>JUL</option>
-							<option value='7'>AGO</option>
-							<option value='8'>SET</option>
-							<option value='9'>OUT</option>
-							<option value='10'>NOV</option>
-							<option value='11'>DEZ</option>
-						</select>
-					</div>
-					
+				<div class='col-sm-6'>
+			
+					<label>Ano</label>
+					<input class="form-control" id="field_ano" name="field_ano" type="number" value=2018 maxlength="4"/>
 				</div>
 				
-				<div class='row' style='padding-top:15px'>
+				<div class='col-sm-6'>
+					<label>Mês</label>
+					<select id="field_meses" class="form-control" name="field_meses">
+						<option value='0'>JAN</option>
+						<option value='1'>FEV</option>
+						<option value='2'>MAR</option>
+						<option value='3'>ABR</option>
+						<option value='4'>MAI</option>
+						<option value='5'>JUN</option>
+						<option value='6'>JUL</option>
+						<option value='7'>AGO</option>
+						<option value='8'>SET</option>
+						<option value='9'>OUT</option>
+						<option value='10'>NOV</option>
+						<option value='11'>DEZ</option>
+					</select>
+				</div>
 					
-				<table class="table table-sm " border="1">
-					
-					<thead id='headChecklist' class='table-dark'>
-					
-					</thead>
-					
-					<tbody id='checklist'>
-					
-					</tbody>
-				</table>
+			</div>
+				
+			<div class='row table-responsive' style='padding-top:15px'>
+				<div class="col-sm-12">
+					<table class="table table-sm table-bordered" >
+						
+						<thead id='headChecklist' class='table-dark'>
+						
+						</thead>
+						
+						<tbody id='checklist'>
+						
+						</tbody>
+					</table>
+				</div>
 			</div>
 		</div>
 		
@@ -97,9 +106,11 @@
 		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
 		<script src="js/firebase.js"></script>
        <!-- <script src="js/sessao.js"></script>-->
-		<script src="js/new_coach_user.js"></script>
 		
 		<script>
+			var diaDeHoje = new Date();
+			//alert(diaDeHoje.getFullYear());
+
 			$('#field_meses').on('change', function(){
 				$('#checklist').html("");
 				
@@ -107,19 +118,12 @@
 				
 				fdb.ref('itens').once('value').then(function(snapshot){
 					
-					//carregaChecklist(snapshot.key, $("#field_ano").val(),$(this).val());
-					
 					snapshot.forEach(function(child){
-					
-						//alert(child.key);
 						
 						carregaChecklist(child, $("#field_ano").val(),field_meses);
 						
-						
 					});
 				});
-				
-				
 			});
 			
 			var myUserId;
@@ -137,8 +141,12 @@
 			}
 			
 			function createTd(item, ano, mes, dia, x){
+
+				if(dia == diaDeHoje.getDate() && mes == (diaDeHoje.getMonth() +1) && diaDeHoje.getFullYear() == ano){
+					return "<td style='width:27px;background:#eee' onclick='marcaCheckList(this)' align='center' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";	
+				}
 			
-				return "<td onclick='marcaCheckList(this)' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";
+				return "<td style='width:27px' onclick='marcaCheckList(this)' align='center' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";
 			}
 			
 			function carregaChecklist(item, ano, mes){
@@ -161,10 +169,10 @@
 				
 				var trHeader = $("<tr></tr>");
 				
-				trHeader.append("<th width='150px'>ITENS</th>");	
+				trHeader.append("<th width='150px'>Hábito</th>");	
 				while (date.getMonth() === (mesSel - 1) /* && date.getDate() != 8*/) {
 								
-					trHeader.append("<th  ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</th>");
+					trHeader.append("<td ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</td>");
 					days.push(date.getDate());
 					date.setDate(date.getDate() + 1);
 				
@@ -187,14 +195,10 @@
 							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
 						}
 					}
-					//$('#checklist').append("</tr>")
-					
 					
 				});
 				
-				
 				$("#checklist").append(tBody);
-				
 					
 			}
 			
@@ -203,12 +207,11 @@
 				if (user) {
 					
 					myUserId = firebase.auth().currentUser.uid;
-				
 					
 				} 
 				else {
          
-            //window.location.href = 'login.html';
+        			//window.location.href = 'login.html';
             
 				}
 
