@@ -218,7 +218,24 @@
             
 				}
 
-    });
+			});
+			
+			function init(){
+				
+				$("#field_ano").val(diaDeHoje.getFullYear())
+				$("#field_meses").val(diaDeHoje.getMonth())
+				
+				fdb.ref('itens').once('value').then(function(snapshot){
+					
+					snapshot.forEach(function(child){
+						
+						carregaChecklist(child, diaDeHoje.getFullYear(),diaDeHoje.getMonth());
+						
+					});
+				});
+			}
+			
+			init();
 		</script>
 
   	</body>
