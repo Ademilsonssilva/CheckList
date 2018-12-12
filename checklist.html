@@ -1,48 +1,16 @@
 <!doctype html>
 <html lang="en">
   	<head>
-    	<!-- Required meta tags -->
-    	<meta charset="utf-8">
-    	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta charset="utf-8">
 
-    	<!-- Bootstrap CSS -->
-		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-		
-		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.css" />
-		<link type="text/css" rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid-theme.min.css" />
-		
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
-		
-    	<title>Firebase CheckList</title>
-  	</head>
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<title>Checklist</title>
+
+		<script src="html_base/libraries.js"></script>	 
+	</head>
   	<body>
 	
-        <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-        	<a class="navbar-brand" href="#">CheckList</a>
-	        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-	          	<span class="navbar-toggler-icon"></span>
-	        </button>
-	        <div class="collapse navbar-collapse" id="navbarCollapse">
-	          	<ul class="navbar-nav mr-auto">
-					<li class="nav-item active">
-							<a class="nav-link" href="home.html">Home <span class="sr-only">(current)</span></a>
-					</li>
-					<li class="nav-item">
-						<a class="nav-link" href="checklist.html">Hábitos</a>
-					</li>
-					<li class="nav-item">
-							<a class="nav-link" href="new_coach_user.html">Usuários</a>
-					</li>
-					
-					<li class="nav-item">
-						<a class="nav-link" href="new_event.html">Eventos</a>
-					</li>
-					
-				</ul>
-				
-				<a style="color: gray" id="logout" href="#">Logout</a>
-	        </div>
-      	</nav>
+       <script src="html_base/navbar.js"></script>
 			
         <div class="container" style='padding-top:100px'>
 			<div class='row'>
@@ -95,20 +63,17 @@
 					</table>
 				</div>
 			</div>
+			
+			<div class="row">
+				<div class="col-sm-12">
+					<button class="btn btn-primary">Compartilhar</button>
+				</div>
+			</div>
 		</div>
 		
 		
-	    <!-- Optional JavaScript -->
-	    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-	    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-		 
-    	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
-		<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase.js"></script>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/7.29.2/sweetalert2.all.min.js"></script>
-		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsgrid/1.5.3/jsgrid.min.js"></script>
-		<script src="js/firebase.js"></script>
-       <!-- <script src="js/sessao.js"></script>-->
+	   <script src="html_base/scripts_base.js"></script>
+       
 		
 		<script>
 			var diaDeHoje = new Date();
@@ -134,11 +99,54 @@
 			function marcaCheckList(ev){
 				
 				if($(ev).html() == ""){					
-					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(true);					
-					$(ev).html("<span style='color:green' class='far fa-check-circle'></span>");
+					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(true, function(erro){
+						if(erro){
+							swal({
+								
+								html : "<b>Não foi possivel efetuar a operação</b>",
+								toast : true,
+								type : 'error',
+								timer: 1200
+							});
+						}
+						else{
+							swal({
+								
+								html : "<b>Hábito registrado</b>",
+								toast : true,
+								type : 'success',
+								timer: 1200
+							});
+						
+						//alert('tudo ok')
+						}
+					});
+					$(ev).html("<span style='color:green' class='fas fa-check'></span>");
 				}
 				else{
-					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(false);
+					firebase.database().ref('users-cliente/' + myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia')).set(false, function(erro){
+						if(erro){
+						
+							swal({
+								
+								html : "<b>Não foi possivel efetuar a operação</b>",
+								toast : true,
+								type : 'error',
+								timer: 1200
+							});
+						}
+						else{
+							
+							swal({
+								
+								html : "<b>Hábito desmarcado com sucesso</b>",
+								toast : true,
+								type : 'success',
+								timer: 1200
+							});
+						
+						}
+					});
 					$(ev).html("");
 				}
 			}
@@ -192,7 +200,7 @@
 					for (var i = 0; i < days.length; i++) {
 						if(snapshot.child(i+1).val()){									
 							//teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
-							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green'  class='far fa-check-circle'></span>"));									
+							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green'  class='fas fa-check'></span>"));									
 						}
 						else{
 							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
