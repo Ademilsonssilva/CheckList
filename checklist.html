@@ -17,10 +17,9 @@
 
 				<div class='col-sm-12'>
 					<h2>CheckList de Hábitos</h2>
-
 				</div>
 			</div>
-			
+			<br />
 			<div class='row'>
 				
 				<div class='col-sm-6'>
@@ -51,7 +50,7 @@
 				
 			<div class='row table-responsive' style='padding-top:15px'>
 				<div class="col-sm-12">
-					<table class="table table-sm table-bordered">
+					<table class="table table-sm table-bordered" id="tbl_checklist">
 						
 						<thead id='headChecklist' class='table-dark'>
 						
@@ -65,33 +64,66 @@
 			</div>
 			
 			<div class="row">
+				
 				<div class="col-sm-12">
-					<button class="btn btn-primary">Compartilhar</button>
+				<button type="button" class="btn btn-primary" onclick="compartilhar()" data-toggle="modal" data-target="#exampleModal">
+					Compartilhar
+				</button>
+
+				<!-- Modal -->
+				<div class="modal fade" id="exampleModal" tabindex="-1" style='width:100%' role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+				  <div class="modal-dialog modal-lg" role="document">
+					 <div class="modal-content">
+						<div class="modal-header">
+						  <h5 class="modal-title" id="exampleModalLabel">Compartilhar</h5>
+						  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							 <span aria-hidden="true">&times;</span>
+						  </button>
+						</div>
+						<div class="modal-body">
+						  
+						</div>
+						<div class="modal-footer">
+						  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						  <button type="button" class="btn btn-primary">Save changes</button>
+						</div>
+					 </div>
+				  </div>
 				</div>
+			</div>
 			</div>
 		</div>
 		
-		
 	   <script src="html_base/scripts_base.js"></script>
-       
-		
+      		
 		<script>
+			function compartilhar(){
+			
+				table = $("<table class='table table-sm'></table>")
+			
+				$(".modal-body").html(table.append($("#tbl_checklist").html()));
+			}
+		
 			var diaDeHoje = new Date();
 			//alert(diaDeHoje.getFullYear());
 
 			$('#field_meses').on('change', function(){
 				$('#checklist').html("");
 				
-				field_meses = $(this).val();
+				$('#checklist').html("<tr><td>Carregando</td></tr>");
 				
-				fdb.ref('itens').once('value').then(function(snapshot){
+				field_meses = $(this).val();
+				$("#tbl_checklist").hide();
+				fdb.ref('itens').orderByChild('nome').once('value').then(function(snapshot){
 					
 					snapshot.forEach(function(child){
 						
 						carregaChecklist(child, $("#field_ano").val(),field_meses);
 						
-					});
+					});					
 				});
+				
+				$("#tbl_checklist").show();
 			});
 			
 			var myUserId;
@@ -170,7 +202,7 @@
 					
 				var anoSel = parseInt(ano);
 				var mesSel = parseInt(mes) + 1;
-				//alert('users-cliente/' +  myUserId + '/'+item+'/'+anoSel+'/'+mesSel )
+				
 				firebase.database().ref('users-cliente/' + myUserId).once('value').then(function(snap){
 					
 					if(!snap.exists()){
@@ -181,46 +213,47 @@
 				});
 				
 				var date = new Date(anoSel, (mesSel - 1), 1);
-				
 				var days = [];
-				
 				var trHeader = $("<tr></tr>");
 				
-				trHeader.append("<th width='150px'>Hábito</th>");	
+				trHeader.append("<th width='130px'>Hábito</th>");	
 				while (date.getMonth() === (mesSel - 1) /* && date.getDate() != 8*/) {
 					
-					trHeader.append("<td ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</td>");
+					trHeader.append("<td align='center' ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</td>");
 					days.push(date.getDate());
 					date.setDate(date.getDate() + 1);
-				
 				}
-				
 				
 				$("#headChecklist").html(trHeader);
 				
 				var tBody = $("<tr></tr>");
 				
-				tBody.append("<td width='100px'>"+item.val().nome+"</td>");				
+				//tBody.hide();
+				tBody.append("<td width='90px'>"+item.val().nome+"</td>");				
 				
 				firebase.database().ref('users-cliente/'+ myUserId+'/'+item.key+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){
 					
 					for (var i = 0; i < days.length; i++) {
 						if(snapshot.child(i+1).val()){									
 							//teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
-							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green'  class='fas fa-check'></span>"));									
+							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green' class='fas fa-check'></span>"));									
 						}
 						else{
 							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
 						}
 					}
 					
+					//tBody.show();
+					
+				});
+								
+				$("#checklist").append(tBody);
+								
+				$("td[dia='"+diaDeHoje.getDate()+"'][mes='"+(diaDeHoje.getMonth()+1)+"'][ano='"+diaDeHoje.getFullYear()+"']").css({
+					color: "gold",
+					fontWeight:"bold"
 				});
 				
-				$("#checklist").append(tBody);
-					
-				//$("td[dia='"+diaDeHoje.getDate()+"']").css('background','#bbb');
-				$("td[dia='"+diaDeHoje.getDate()+"']").css('color','gold');
-				$("td[dia='"+diaDeHoje.getDate()+"']").css('font-weight','bold');
 			}
 			
 			firebase.auth().onAuthStateChanged(function(user) {
@@ -229,13 +262,12 @@
 					
 					myUserId = firebase.auth().currentUser.uid;
 					
+					init();
 				} 
 				else {
          
         			//window.location.href = 'login.html';
-            
 				}
-
 			});
 			
 			function init(){
@@ -243,7 +275,7 @@
 				$("#field_ano").val(diaDeHoje.getFullYear())
 				$("#field_meses").val(diaDeHoje.getMonth())
 				
-				fdb.ref('itens').once('value').then(function(snapshot){
+				fdb.ref('itens').orderByChild('nome').once('value').then(function(snapshot){
 					
 					snapshot.forEach(function(child){
 						
@@ -253,7 +285,6 @@
 				});
 			}
 			
-			init();
 		</script>
 
   	</body>
