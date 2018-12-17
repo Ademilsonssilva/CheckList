@@ -1,36 +1,99 @@
 $(document).ready(function () {
 
-    dias_do_mes = getDiasDoMes();
 
-    hoje = new Date().getDate();
+    data = moment();
 
-    dias = getSeteDias(30, dias_do_mes);
+    somador = 0;
 
-    console.log(moment().format('DD/MM/YYYY'));
+    mostraSemana(somador);
 
-    for(i = 0; i < dias_do_mes.length; i++) {
+    $('.navegacao').on('click', function () {
+        if( $(this).hasClass('proximo') ) {
+            somador = 7;
+        }
+        else {
+            somador = -7;
+        }
 
-        date = new Date();
-        date.setDate(i+1);
-        // $('.content').append(`${dias_do_mes[i]} - ${diaSemanaExtenso(date.getDay())}<br>`);
+        mostraSemana(somador);
+    })
 
-    }
+    // data.day(somador);
 
-    // mostraSemana(new Date());
+    // for( i = 0; i < 7; i++ ) {
 
-    function mostraSemana(date)
+    //     data.day(i);
+
+    //     $('.content').append('dia ' + data.format('DD/MM/YYYY') + ' - ' + diaSemanaExtenso(i) + '<br>');
+
+    // }
+
+    console.log(data.format('DD/MM/YYYY'));
+
+    // function montaTable()
+    // {
+
+    // }
+
+
+    function mostraSemana(somador)
     {
-        date = inicioSemana(date);
+        data.day(somador);
 
-        for(i=0; i < 7; i++) {
-            $('.content').append(`${date.getDate()} - ${diaSemanaExtenso(date.getDay())} ${date.format('d/m/Y')}<br>`);
-            date.setDate(date.getDate()+1);
+        // $('.content').html('');
+
+        for( i = 0; i < 7; i++ ) {
+
+            data.day(i);
+
+            $('#dia-'+i).html(data.format('DD/MM'));
+    
+            // $('.content').append('dia ' + data.format('DD/MM/YYYY') + ' - ' + diaSemanaExtenso(i) + '<br>');
+    
         }
     }
 
+    fdb.ref('itens').on('value', (snapshot) => {
+        $('#tbody').html('');
+        snapshot.forEach((child) => {
+            // $('#tbody').append(`
+            //     <tr>
+            //         <td>
+            // `);
+        })
+    })
+
+    // dias_do_mes = getDiasDoMes();
+
+    // hoje = new Date().getDate();
+
+    // dias = getSeteDias(30, dias_do_mes);
+
     
 
-    console.log(dias);
+    // for(i = 0; i < dias_do_mes.length; i++) {
+
+    //     date = new Date();
+    //     date.setDate(i+1);
+        // $('.content').append(`${dias_do_mes[i]} - ${diaSemanaExtenso(date.getDay())}<br>`);
+
+    // }
+
+    // mostraSemana(new Date());
+
+    // function mostraSemana(date)
+    // {
+    //     date = inicioSemana(date);
+
+    //     for(i=0; i < 7; i++) {
+    //         $('.content').append(`${date.getDate()} - ${diaSemanaExtenso(date.getDay())} ${date.format('d/m/Y')}<br>`);
+    //         date.setDate(date.getDate()+1);
+    //     }
+    // }
+
+    
+
+    // console.log(dias);
 
 
     // alert(startOfWeek( new Date()));
