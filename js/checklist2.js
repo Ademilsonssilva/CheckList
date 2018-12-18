@@ -1,5 +1,24 @@
 $(document).ready(function () {
 
+    // function getAddress () { 
+    //     console.log('GetAddress chamada');
+    //     return new Promise ((resolve, reject)=>{ 
+    //         setTimeout(resolve, 2000); 
+    //     }); 
+    // }
+    
+    // function getUser () { 
+    //     return new Promise((resolve, reject)=>{ 
+    //         console.log('GetUser chamada');
+    //         setTimeout(_=>resolve(getAddress()), 1000); 
+    //     }); 
+    // }
+    
+    // getUser().then( result=>console.log('Done') ); 
+
+
+    // return false;
+
 
     data = moment();
 
@@ -18,195 +37,104 @@ $(document).ready(function () {
         mostraSemana(somador);
     })
 
-    // data.day(somador);
+    $(document).on('click', 'td.item', (event) => {
 
-    // for( i = 0; i < 7; i++ ) {
+        ano = $(event.currentTarget).attr('ano');
+        mes = $(event.currentTarget).attr('mes');
+        dia = $(event.currentTarget).attr('dia');
+        evento = $(event.currentTarget).attr('evento');
 
-    //     data.day(i);
+        marcado = !$(event.currentTarget).hasClass('marcado');
 
-    //     $('.content').append('dia ' + data.format('DD/MM/YYYY') + ' - ' + diaSemanaExtenso(i) + '<br>');
+        url = `users-cliente/${logged_user}/${evento}/${ano}/${mes}/${dia}`;
 
-    // }
-
-    console.log(data.format('DD/MM/YYYY'));
-
-    // function montaTable()
-    // {
-
-    // }
-
+        fdb.ref(url).set(marcado, () => {
+            mostraSemana(somador);
+        });
+        
+    });
 
     function mostraSemana(somador)
     {
         data.day(somador);
-
-        // $('.content').html('');
 			
-			arr = [];
+        arr = [];
 			
         for( i = 0; i < 7; i++ ) {
 
             data.day(i);
 				
-            $('#dia-'+i).html(data.format('DD/MM'));
-    
-            // $('.content').append('dia ' + data.format('DD/MM/YYYY') + ' - ' + diaSemanaExtenso(i) + '<br>');
+            $('#dia-'+i).html(data.format('DD/MM'));  
 				
-				//fdb.ref('users-cliente/'+ logged_user+'/'+child.key+'/'+ anoSel + '/' + mesSel)
-				
-				arr.push({date1:data.format('DD/MM/YYYY')});
+            arr.push({date1:data.format('DD/MM/YYYY')});
     
         }
-		  
-		  carregaSemana();
-		  
-		  //alert(arr)
+        
+        new Promise((resolve, reject) => {
+            resolve(carregaSemana()).then(() => {
+                alert('oi');
+            })
+        })
+        
+
     }
 	
 	
 	function carregaSemana(){
-	
-		 fdb.ref('itens').on('value', (snapshot) => {
-			  $('#tbody').html('');
-			  snapshot.forEach((child) => {
-					
-					var trItem = $("<tr></tr>");
-					
-					nome = child.val().nome;
-						
-					tdItem = $("<td></td>");
-					
-					tdItem.append(nome);
-					
-					trItem.append(tdItem);
-					
-					for( i = 0; i < arr.length ; i++ ) {
-
-						xxx = moment(arr[i].date1, 'DD/MM/YYYY');
-						
-						//alert(arr[i].date1)
-						
-						ano = xxx.format("YYYY");
-						mes = xxx.format("MM");
-						dia = xxx.format("DD");
-						
-						//alert(ano)
-						//alert('users-cliente/'+ logged_user+'/'+child.key+'/'+ ano + '/' + mes + '/' + dia);
-						fdb.ref('users-cliente/'+ logged_user+'/'+child.key+'/'+ ano + '/' + mes + '/' + dia).once("value").then(function(snapshot){
-							
-							tem = snapshot.val();
-							
-							//td1 = $("<td></td>");
-							trItem.append("<td>" + (tem == true ? "<span style='color:green' class='fas fa-check'></span>" : "") + "</td>");
-							//trItem.append(td1);
-							
-						});
-		 
-					}
-					
-					$('#tbody').append(trItem)
-					//console.log(trItem.html())
-					
-				
-			  })
-		 })
-	}
-	 
-
-    // dias_do_mes = getDiasDoMes();
-
-    // hoje = new Date().getDate();
-
-    // dias = getSeteDias(30, dias_do_mes);
-
     
+        return new Promise( (resolve, reject) => {
 
-    // for(i = 0; i < dias_do_mes.length; i++) {
+            return fdb.ref('itens').on('value', (snapshot) => {
+                $('#tbody').html('');
+                snapshot.forEach((child) => {
+                        
+                        var trItem = $("<tr></tr>");
+                        
+                        nome = child.val().nome;
+                            
+                        tdItem = $("<td></td>");
+                        
+                        tdItem.append(nome);
+                        
+                        trItem.append(tdItem);
+                        
+                        for( i = 0; i < arr.length ; i++ ) {
 
-    //     date = new Date();
-    //     date.setDate(i+1);
-        // $('.content').append(`${dias_do_mes[i]} - ${diaSemanaExtenso(date.getDay())}<br>`);
+                            xxx = moment(arr[i].date1, 'DD/MM/YYYY');
+                            
+                            var ano = xxx.format("YYYY");
+                            var mes = xxx.format("MM");
+                            var dia = xxx.format("DD");
+                            
 
-    // }
+                            gerar(child.key, dia, mes, ano);
 
-    // mostraSemana(new Date());
+                            function gerar(evento, day, month, year) {
 
-    // function mostraSemana(date)
-    // {
-    //     date = inicioSemana(date);
+                        
+                                fdb.ref('users-cliente/'+ logged_user+'/'+evento+'/'+ year + '/' + month + '/' + day).once("value").then(function(snapshot){
+                                    
+                                    tem = snapshot.val();
+                                    
+                                    td = $("<td class='item' dia="+day+" mes="+month+" ano="+year+" evento="+evento+"></td>");
+                                    td.append((tem == true ? "<span style='color:green' class='fas fa-check'></span>" : ""));
+                                    if(tem){
+                                        td.addClass('marcado');
+                                    }
+                                    trItem.append(td);
+                                    
+                                });
+                            
+                            }
+            
+                        }
+                        
+                        $('#tbody').append(trItem);					
+                    
+                })
+            })
 
-    //     for(i=0; i < 7; i++) {
-    //         $('.content').append(`${date.getDate()} - ${diaSemanaExtenso(date.getDay())} ${date.format('d/m/Y')}<br>`);
-    //         date.setDate(date.getDate()+1);
-    //     }
-    // }
-
-    
-
-    // console.log(dias);
-
-
-    // alert(startOfWeek( new Date()));
-
-    fdb.ref('users-cliente/'+logged_user).on('value', function (snapshot) {
-        console.log(snapshot.val());
-    })
-
-    function inicioSemana(date)
-    {
-        var diff = date.getDate() - date.getDay() + (date.getDay() === 0 ? -6 : 1);
-    
-        return new Date(date.setDate(diff));
-    
-    }
-
-    function getSeteDias(data, dias_do_mes)
-    {
-        dias = [];
-        for(i = data-3; i < data+4; i++) {
-
-            if (dias_do_mes.includes(i) ) {
-
-                dias.push(i);
-
-            }
-
-        }
-
-        return dias;
-    }
-
-    function diaSemanaExtenso(dia)
-    {
-        switch(dia) {
-            case 0: return 'Domingo';
-            case 1: return 'Segunda';
-            case 2: return 'Terça';
-            case 3: return 'Quarta';
-            case 4: return 'Quinta';
-            case 5: return 'Sexta';
-            case 6: return 'Sábado';
-        }
-    }
-
-    function getDiasDoMes(date = null)
-    {
-        if(date == null) {
-            date = new Date();
-        }
-
-        date.setDate(1);
-
-        mes = date.getMonth();
-
-        var days = [];
-        
-        while (date.getMonth() === (mes) /* && date.getDate() != 8*/) {
-            days.push(date.getDate());
-            date.setDate(date.getDate() + 1);
-        }
-
-        return days;
+        });
     }
 
 });
