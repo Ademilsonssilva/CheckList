@@ -22,13 +22,13 @@
 			<br />
 			<div class='row'>
 				
-				<div class='col-sm-6'>
+				<div class='col-sm-4'>
 			
 					<label>Ano</label>
 					<input class="form-control" id="field_ano" name="field_ano" type="number" value=2018 maxlength="4"/>
 				</div>
 				
-				<div class='col-sm-6'>
+				<div class='col-sm-4'>
 					<label>Mês</label>
 					<select id="field_meses" class="form-control" name="field_meses">
 						<option value='0'>Janeiro</option>
@@ -43,6 +43,13 @@
 						<option value='9'>Outubro</option>
 						<option value='10'>Novembro</option>
 						<option value='11'>Dezembro</option>
+					</select>
+				</div>
+				
+				<div class='col-sm-4'>
+					<label>Semana</label>
+					<select id="field_semana" class="form-control" name="field_semana">
+				
 					</select>
 				</div>
 					
@@ -97,6 +104,7 @@
 	   <script src="html_base/scripts_base.js"></script>
       		
 		<script>
+			
 			function compartilhar(){
 			
 				table = $("<table class='table table-sm'></table>")
@@ -105,15 +113,18 @@
 			}
 		
 			var diaDeHoje = new Date();
-			//alert(diaDeHoje.getFullYear());
-
+			
+			
 			$('#field_meses').on('change', function(){
+								
 				$('#checklist').html("");
 				
-				$('#checklist').html("<tr><td>Carregando</td></tr>");
-				
 				field_meses = $(this).val();
-				$("#tbl_checklist").hide();
+				
+				carregaAnoMesDiaSemanas($("#field_ano").val(), field_meses, 1);
+				
+				headerTableChecklist($("#field_ano").val(),field_meses)
+				
 				fdb.ref('itens').orderByChild('nome').once('value').then(function(snapshot){
 					
 					snapshot.forEach(function(child){
@@ -123,7 +134,15 @@
 					});					
 				});
 				
-				$("#tbl_checklist").show();
+				var txt = "";
+				$("#field_semana").html("");
+				for (var i = 1; i < weekend.length; i++) {
+					$("#field_semana").append("<option value='"+i+"'>Semana "+ i  + "</option>")
+				}	
+			});
+			
+			$("#field_semana").on('change', function(){
+				
 			});
 			
 			var myUserId;
@@ -135,8 +154,7 @@
 				if($(ev).html() == ""){					
 					firebase.database().ref('users-cliente/' + urlCheckList).set(true, function(erro){
 						if(erro){
-							swal({
-								
+							swal({								
 								html : "<b>Não foi possivel efetuar a operação</b>",
 								toast : true,
 								type : 'error',
@@ -152,9 +170,7 @@
 								position: 'top-end',
 								showConfirmButton: false,
 								timer: 1200
-							});
-						
-						//alert('tudo ok')
+							});						
 						}
 					});
 					$(ev).html("<span style='color:green' class='fas fa-check'></span>");
@@ -198,6 +214,33 @@
 				return "<td style='width:27px' onclick='marcaCheckList(this)' align='center' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";
 			}
 			
+			var days = [];
+			var weekend = [];
+			
+			function headerTableChecklist(anoSel, mesSel, semanal = false){
+				
+				var trHeader = $("<tr></tr>");
+				
+				trHeader.append("<th width='120px'>Hábito</th>");	
+			
+			
+				if(!semanal){
+			
+					for(var i = 0; i < days.length; i++){
+					
+						trHeader.append("<td align='center' ano="+ anoSel +" mes='" + mesSel  +"' dia='" + days[i]  +"'>" + days[i] +"</td>");
+					}
+				}
+				else{
+				
+					for(var i = 0; i < weekend[$('#field_semana').val()].length; i++){
+						trHeader.append("<td align='center' ano="+ anoSel +" mes='" + mesSel  +"' dia='" + weekend[$('#field_semana').val()][i]  +"'>" +  weekend[$('#field_semana').val()][i]  +"</td>");
+					}
+				}
+			
+				$("#headChecklist").html(trHeader);
+			}
+						
 			function carregaChecklist(item, ano, mes){
 					
 				var anoSel = parseInt(ano);
@@ -207,29 +250,12 @@
 					
 					if(!snap.exists()){
 						firebase.database().ref('users-cliente/' +  myUserId + '/'+item.key+'/'+anoSel+'/'+mesSel ).set('');
-					}else{
-						
 					}
 				});
 				
-				var date = new Date(anoSel, (mesSel - 1), 1);
-				var days = [];
-				var trHeader = $("<tr></tr>");
-				
-				trHeader.append("<th width='130px'>Hábito</th>");	
-				while (date.getMonth() === (mesSel - 1) /* && date.getDate() != 8*/) {
-					
-					trHeader.append("<td align='center' ano="+ ano +" mes='" + mesSel  +"' dia='" + (date.getDate())  +"'>" + (date.getDate()) +"</td>");
-					days.push(date.getDate());
-					date.setDate(date.getDate() + 1);
-				}
-				
-				$("#headChecklist").html(trHeader);
-				
 				var tBody = $("<tr></tr>");
 				
-				//tBody.hide();
-				tBody.append("<td width='90px'>"+item.val().nome+"</td>");				
+				tBody.append("<td width='90px' style='font-size:10pt'>"+item.val().nome+"</td>");				
 				
 				firebase.database().ref('users-cliente/'+ myUserId+'/'+item.key+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){
 					
@@ -242,18 +268,15 @@
 							tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
 						}
 					}
-					
-					//tBody.show();
-					
+							
 				});
 								
 				$("#checklist").append(tBody);
 								
-				$("td[dia='"+diaDeHoje.getDate()+"'][mes='"+(diaDeHoje.getMonth()+1)+"'][ano='"+diaDeHoje.getFullYear()+"']").css({
+				$("td[dia='"+diaDeHoje.getDate()+"'][mes='"+(diaDeHoje.getMonth())+"'][ano='"+diaDeHoje.getFullYear()+"']").css({
 					color: "gold",
 					fontWeight:"bold"
-				});
-				
+				});				
 			}
 			
 			firebase.auth().onAuthStateChanged(function(user) {
@@ -275,14 +298,56 @@
 				$("#field_ano").val(diaDeHoje.getFullYear())
 				$("#field_meses").val(diaDeHoje.getMonth())
 				
+				carregaAnoMesDiaSemanas(diaDeHoje.getFullYear(), diaDeHoje.getMonth(), 1);
+				
+				headerTableChecklist($("#field_ano").val(),$("#field_meses").val())
+				
 				fdb.ref('itens').orderByChild('nome').once('value').then(function(snapshot){
 					
-					snapshot.forEach(function(child){
-						
-						carregaChecklist(child, diaDeHoje.getFullYear(),diaDeHoje.getMonth());
-						
+					snapshot.forEach(function(child){						
+						carregaChecklist(child, diaDeHoje.getFullYear(),diaDeHoje.getMonth());						
 					});
+					
 				});
+				
+				var txt = "";
+				$("#field_semana").html("");
+				for (var i = 1; i < weekend.length; i++) {
+					$("#field_semana").append("<option value='"+i+"'>Semana "+i+"</option>")
+				}							
+			}
+			
+			function carregaAnoMesDiaSemanas(ano, mes, dia){
+				
+				var date = new Date(ano, mes, 1);
+							
+				weekend = [];
+				days = [];
+				
+				var contWeekend = 1;
+				
+				var c = 0;
+				
+				weekend[1] = [];
+				
+				while (date.getMonth() === parseInt(mes)) {
+					
+					days.push(date.getDate());									
+					
+					c++;
+					
+					weekend[contWeekend].push(date.getDate());									
+					
+					date.setDate(date.getDate() + 1);
+					
+					if(c == 7 && date.getMonth() === parseInt(mes)){
+						contWeekend++;
+						
+						weekend[contWeekend] = [];
+						
+						c=0;
+					}
+				}	
 			}
 			
 		</script>

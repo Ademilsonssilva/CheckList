@@ -14,7 +14,7 @@ $(document).ready(function () {
         else {
             somador = -7;
         }
-
+			
         mostraSemana(somador);
     })
 
@@ -41,27 +41,77 @@ $(document).ready(function () {
         data.day(somador);
 
         // $('.content').html('');
-
+			
+			arr = [];
+			
         for( i = 0; i < 7; i++ ) {
 
             data.day(i);
-
+				
             $('#dia-'+i).html(data.format('DD/MM'));
     
             // $('.content').append('dia ' + data.format('DD/MM/YYYY') + ' - ' + diaSemanaExtenso(i) + '<br>');
+				
+				//fdb.ref('users-cliente/'+ logged_user+'/'+child.key+'/'+ anoSel + '/' + mesSel)
+				
+				arr.push({date1:data.format('DD/MM/YYYY')});
     
         }
+		  
+		  carregaSemana();
+		  
+		  //alert(arr)
     }
+	
+	
+	function carregaSemana(){
+	
+		 fdb.ref('itens').on('value', (snapshot) => {
+			  $('#tbody').html('');
+			  snapshot.forEach((child) => {
+					
+					var trItem = $("<tr></tr>");
+					
+					nome = child.val().nome;
+						
+					tdItem = $("<td></td>");
+					
+					tdItem.append(nome);
+					
+					trItem.append(tdItem);
+					
+					for( i = 0; i < arr.length ; i++ ) {
 
-    fdb.ref('itens').on('value', (snapshot) => {
-        $('#tbody').html('');
-        snapshot.forEach((child) => {
-            // $('#tbody').append(`
-            //     <tr>
-            //         <td>
-            // `);
-        })
-    })
+						xxx = moment(arr[i].date1, 'DD/MM/YYYY');
+						
+						//alert(arr[i].date1)
+						
+						ano = xxx.format("YYYY");
+						mes = xxx.format("MM");
+						dia = xxx.format("DD");
+						
+						//alert(ano)
+						//alert('users-cliente/'+ logged_user+'/'+child.key+'/'+ ano + '/' + mes + '/' + dia);
+						fdb.ref('users-cliente/'+ logged_user+'/'+child.key+'/'+ ano + '/' + mes + '/' + dia).once("value").then(function(snapshot){
+							
+							tem = snapshot.val();
+							
+							//td1 = $("<td></td>");
+							trItem.append("<td>" + (tem == true ? "<span style='color:green' class='fas fa-check'></span>" : "") + "</td>");
+							//trItem.append(td1);
+							
+						});
+		 
+					}
+					
+					$('#tbody').append(trItem)
+					//console.log(trItem.html())
+					
+				
+			  })
+		 })
+	}
+	 
 
     // dias_do_mes = getDiasDoMes();
 
