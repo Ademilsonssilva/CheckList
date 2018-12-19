@@ -55,11 +55,11 @@ $(document).ready(function () {
 
             if ( moment(moment().format('YYYY-MM-DD')).isSame(data.format('YYYY.MM.DD')) ) {
 
-                $('#dia-'+i).parent().css('background-color', '#DCFCDC');
+                $('#dia-'+i).closest('th').css('background-color', '#DCFCDC');
 
             }
             else {
-                $('#dia-'+i).parent().css('background-color', '');
+                $('#dia-'+i).closest('th').css('background-color', '');
             }
 				
             $('#dia-'+i).html(data.format('DD/MM'));  
