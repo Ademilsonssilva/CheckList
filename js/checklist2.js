@@ -134,7 +134,10 @@ $(document).ready(function () {
                     $('#tbody').append(trItem);					
                 
             })
-        }).then(() => {
+        }).then((resolve, reject) => {
+
+            console.log( resolve)
+            //return;
             swal.close();
         });
 

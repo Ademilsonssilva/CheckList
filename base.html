@@ -71,5 +71,42 @@
 		<!--<script src="https://www.gstatic.com/firebasejs/5.6.0/firebase-auth.js"></script>-->
 		<!--<script src="https://www.gstatic.com/firebasejs/5.5.2/firebase-database.js"></script>-->
 
+		<script>
+
+			function fazRequisicao(resolver = true){
+				return new Promise((resolve, reject) => {
+
+					setTimeout(() => {
+
+						if(!resolver){
+							reject("Deu erro")
+						}
+
+						resolve("Promise resolvida")
+					},1000);
+				});
+			}
+
+			/*fazRequisicao(true)
+				.then(console.log)
+				.catch(console.error);*/
+
+				fazRequisicao(true)
+				.then(resposta => {
+					// retornar outra Promise
+
+					return resposta;
+				})
+				.then(resposta => {
+					// retornar outra Promise
+
+					console.log(resposta)
+				} )
+				.catch(erro => {
+					// fazer qualquer coisa com o erro ou qualquer código
+					console.log(erro)
+				});
+
+		</script>
   	</body>
 </html>
