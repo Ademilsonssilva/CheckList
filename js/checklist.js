@@ -1,4 +1,3 @@
-	
 function compartilhar(){
 
     table = $("<table class='table table-sm'></table>")
@@ -7,7 +6,6 @@ function compartilhar(){
 }
 
 var diaDeHoje = new Date();
-    
 
 $('#field_meses').on('change', function(){
     
@@ -34,13 +32,10 @@ $('#field_meses').on('change', function(){
             
         });
     }).then((resolve, reject) => {
-
-        console.log( resolve)
-        //return;
+        
         swal.close();
     });
     
-    var txt = "";
     $("#field_semana").html("");
     for (var i = 1; i < weekend.length; i++) {
         $("#field_semana").append("<option value='"+i+"'>Semana "+ i  + "</option>")
@@ -129,7 +124,6 @@ function headerTableChecklist(anoSel, mesSel, semanal = false){
     
     trHeader.append("<th width='120px'>Hábito</th>");	
 
-
     if(!semanal){
 
         for(var i = 0; i < days.length; i++){
@@ -163,18 +157,16 @@ function carregaChecklist(item, ano, mes){
     
     tBody.append("<td width='90px' style='font-size:10pt'>"+item.val().nome+"</td>");				
     
-    firebase.database().ref('users-cliente/'+ myUserId+'/'+item.key+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){
-        
+    firebase.database().ref('users-cliente/'+ myUserId+'/'+item.key+'/'+ anoSel + '/' + mesSel).once("value").then(function(snapshot){        
         for (var i = 0; i < days.length; i++) {
-            if(snapshot.child(i+1).val()){									
-                //teste = 'treinoperna_' + anoSel + '_' + mesSel + '_' + (i+1);									
-                tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green' class='fas fa-check'></span>"));									
+            if(snapshot.child(i+1).val()){
+                
+                tBody.append(createTd(item.key, anoSel, mesSel, (i+1), "<span style='color:green' class='fas fa-check'></span>"));
             }
             else{
-                tBody.append(createTd(item.key, anoSel, mesSel, (i+1), '' ));
+                tBody.append(createTd(item.key, anoSel, mesSel, (i+1), ''));
             }
-        }
-                
+        }                
     });
                     
     $("#checklist").append(tBody);
@@ -224,7 +216,6 @@ function init(){
         swal.close();
     });
     
-    var txt = "";
     $("#field_semana").html("");
     for (var i = 1; i < weekend.length; i++) {
         $("#field_semana").append("<option value='"+i+"'>Semana "+i+"</option>")
@@ -234,14 +225,11 @@ function init(){
 function carregaAnoMesDiaSemanas(ano, mes, dia){
     
     var date = new Date(ano, mes, 1);
-                
-    weekend = [];
-    days = [];
-    
     var contWeekend = 1;
-    
     var c = 0;
     
+    weekend = [];
+    days = [];    
     weekend[1] = [];
     
     while (date.getMonth() === parseInt(mes)) {
@@ -263,5 +251,3 @@ function carregaAnoMesDiaSemanas(ano, mes, dia){
         }
     }	
 }
-			
-		
