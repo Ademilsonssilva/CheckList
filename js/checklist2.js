@@ -53,7 +53,7 @@ $(document).ready(function () {
 
             data.day(i);
 
-            if ( moment(moment().format('YYYY-MM-DD')).isSame(data.format('YYYY.MM.DD')) ) {
+            if ( moment(moment().format('YYYY-MM-DD')).isSame(data.format('YYYY-MM-DD')) ) {
 
                 $('#dia-'+i).closest('th').css('background-color', '#DCFCDC');
 
@@ -81,57 +81,57 @@ $(document).ready(function () {
             $('#tbody').html('');
             snapshot.forEach((child) => {
                     
-                    var trItem = $("<tr></tr>");
+                var trItem = $("<tr></tr>");
+                
+                nome = child.val().nome;
                     
-                    nome = child.val().nome;
-                        
-                    tdItem = $("<td></td>");
+                tdItem = $("<td></td>");
+                
+                tdItem.append(nome);
+                
+                trItem.append(tdItem);
+                
+                for( i = 0; i < arr.length ; i++ ) {
+
+                    xxx = moment(arr[i].date1, 'DD/MM/YYYY');
                     
-                    tdItem.append(nome);
+                    var ano = xxx.format("YYYY");
+                    var mes = xxx.format("MM");
+                    var dia = xxx.format("DD");
                     
-                    trItem.append(tdItem);
+
+                    gerar(child.key, dia, mes, ano);
+
+                    function gerar(evento, day, month, year) {
+
+                
+                        fdb.ref('users-cliente/'+ logged_user+'/'+evento+'/'+ year + '/' + month + '/' + day).once("value").then(function(snapshot){
+                            
+                            tem = snapshot.val();
+
+                            console.log(hoje);
+
+                            if(moment(hoje.format('YYYY-MM-DD')).isSame(moment(`${year}-${month}-${day}`))){
+                                bg = '#DCFCDC';
+                            }
+                            else {
+                                bg = '';
+                            }
+                            
+                            td = $("<td class='item' dia="+day+" mes="+month+" ano="+year+" evento="+evento+" "+ (bg != '' ? "style='background-color: "+bg : '' ) +";'></td>");
+                            td.append((tem == true ? "<span style='color:green' class='fas fa-check'></span>" : ""));
+                            if(tem){
+                                td.addClass('marcado');
+                            }
+                            trItem.append(td);
+                            
+                        });
                     
-                    for( i = 0; i < arr.length ; i++ ) {
-
-                        xxx = moment(arr[i].date1, 'DD/MM/YYYY');
-                        
-                        var ano = xxx.format("YYYY");
-                        var mes = xxx.format("MM");
-                        var dia = xxx.format("DD");
-                        
-
-                        gerar(child.key, dia, mes, ano);
-
-                        function gerar(evento, day, month, year) {
-
-                    
-                            fdb.ref('users-cliente/'+ logged_user+'/'+evento+'/'+ year + '/' + month + '/' + day).once("value").then(function(snapshot){
-                                
-                                tem = snapshot.val();
-
-                                console.log(hoje);
-
-                                if(moment(hoje.format('YYYY-MM-DD')).isSame(moment(`${year}-${month}-${day}`))){
-                                    bg = '#DCFCDC';
-                                }
-                                else {
-                                    bg = '';
-                                }
-                                
-                                td = $("<td class='item' dia="+day+" mes="+month+" ano="+year+" evento="+evento+" "+ (bg != '' ? "style='background-color: "+bg : '' ) +";'></td>");
-                                td.append((tem == true ? "<span style='color:green' class='fas fa-check'></span>" : ""));
-                                if(tem){
-                                    td.addClass('marcado');
-                                }
-                                trItem.append(td);
-                                
-                            });
-                        
-                        }
-        
                     }
-                    
-                    $('#tbody').append(trItem);					
+    
+                }
+                
+                $('#tbody').append(trItem);					
                 
             })
         }).then(() => {
