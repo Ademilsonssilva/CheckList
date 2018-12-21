@@ -52,7 +52,7 @@ function marcaCheckList(ev){
     
     urlCheckList = myUserId + '/' +$(ev).attr('item') +'/' + $(ev).attr('ano') + '/' + $(ev).attr('mes') + '/' + $(ev).attr('dia');
     
-    if($(ev).html() == ""){			
+    if($(ev).html() == ""){		
         firebase.database().ref('users-cliente/' + urlCheckList).set(true, function(erro){
             if(erro){
                 swal({								
@@ -108,11 +108,21 @@ function marcaCheckList(ev){
     
 function createTd(item, ano, mes, dia, x){
 
-    if(dia == diaDeHoje.getDate() && mes == (diaDeHoje.getMonth() +1) && diaDeHoje.getFullYear() == ano){
-        return "<td style='width:27px;background:#eee' onclick='marcaCheckList(this)' align='center' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";	
-    }
+    var td = $("<td onclick='marcaCheckList(this)' align='center'></td>");
+    td.attr("ano" , ano);
+    td.attr("item" , item);
+    td.attr("mes" , mes);
+    td.attr("dia" , dia);
 
-    return "<td style='width:27px' onclick='marcaCheckList(this)' align='center' item="+ item +" ano="+ ano +" mes="+ mes +" dia="+ dia +">" + x + "</td>";
+    td.css({width : '27px'});
+
+    td.html(x);
+
+    if(dia == diaDeHoje.getDate() && mes == (diaDeHoje.getMonth() +1) && diaDeHoje.getFullYear() == ano){
+        td.css("backgroundColor", "#DCFCDC");
+    }    
+
+    return td;
 }
 
 var days = [];
@@ -187,7 +197,7 @@ firebase.auth().onAuthStateChanged(function(user) {
     } 
     else {
 
-        //window.location.href = 'login.html';
+        window.location.href = 'login.html';
     }
 });
     

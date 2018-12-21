@@ -104,7 +104,7 @@ $(document).ready(function () {
                     
                     var ano = xxx.format("YYYY");
                     var mes = xxx.format("MM");
-                    var dia = xxx.format("DD");
+                    var dia = xxx.format("DD") * 1;
                     
 
                     gerar(child.key, dia, mes, ano);
