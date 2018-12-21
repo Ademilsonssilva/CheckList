@@ -77,7 +77,7 @@ $(document).ready(function () {
 
         hoje = moment();
     
-        fdb.ref('itens').once('value', (snapshot) => {
+        fdb.ref('itens').orderByChild('nome').once('value', (snapshot) => {
             $('#tbody').html('');
             snapshot.forEach((child) => {
                     
