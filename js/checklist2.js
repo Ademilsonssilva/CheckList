@@ -88,7 +88,7 @@ $(document).ready(function () {
                 tdItem = $("<td></td>");
                 
                 tdItem.append(`
-                    <span class='d-block d-sm-none sm-text'>
+                    <span class='d-block d-sm-none very-sm-text'>
                         ${nome}
                     </span>
                     <span class='d-none d-sm-block'>
