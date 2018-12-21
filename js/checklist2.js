@@ -55,14 +55,14 @@ $(document).ready(function () {
 
             if ( moment(moment().format('YYYY-MM-DD')).isSame(data.format('YYYY-MM-DD')) ) {
 
-                $('#dia-'+i).closest('th').css('background-color', '#DCFCDC');
+                $('.dia-'+i).closest('th').css('background-color', '#DCFCDC');
 
             }
             else {
-                $('#dia-'+i).closest('th').css('background-color', '');
+                $('.dia-'+i).closest('th').css('background-color', '');
             }
 				
-            $('#dia-'+i).html(data.format('DD/MM'));  
+            $('.dia-'+i).html(data.format('DD/MM'));  
 				
             arr.push({date1:data.format('DD/MM/YYYY')});
     
@@ -87,7 +87,14 @@ $(document).ready(function () {
                     
                 tdItem = $("<td></td>");
                 
-                tdItem.append(nome);
+                tdItem.append(`
+                    <span class='d-block d-sm-none sm-text'>
+                        ${nome}
+                    </span>
+                    <span class='d-none d-sm-block'>
+                        ${nome}
+                    </span>
+                `);
                 
                 trItem.append(tdItem);
                 
