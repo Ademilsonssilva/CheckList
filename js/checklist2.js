@@ -103,7 +103,7 @@ $(document).ready(function () {
                     xxx = moment(arr[i].date1, 'DD/MM/YYYY');
                     
                     var ano = xxx.format("YYYY");
-                    var mes = xxx.format("MM");
+                    var mes = xxx.format("MM") * 1;
                     var dia = xxx.format("DD") * 1;
                     
 

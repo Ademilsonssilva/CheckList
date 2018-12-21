@@ -54,7 +54,15 @@ $(document).ready(function () {
 
     })
 
-    firebase.database().ref('itens').on("value", function(snapshot) {
+    swal({
+        html: 'Carregando',
+        toast: true,
+        onBeforeOpen: () => {
+            Swal.showLoading();
+        }
+    })
+
+    firebase.database().ref('itens').once("value", function(snapshot) {
         dados = [];
         snapshot.forEach(function (childSnapshot) {
             dados.push(childSnapshot);
@@ -64,6 +72,8 @@ $(document).ready(function () {
 
     }, function (errorObject) {
         console.log("The read failed: " + errorObject.code);
+    }).then(()=>{
+        swal.close();
     });
 
 })
