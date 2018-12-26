@@ -10,12 +10,26 @@ $('#logar').on('click', function () {
 			html: 'Não deixe campos em branco!',
 			type: 'warning',
 		})
-
 		
 		return;
 	}
 
 	usuario = firebase.auth().signInWithEmailAndPassword(email, pass).then(function () {
+
+		var uid = firebase.auth().currentUser.uid;
+
+		fdb.ref('users-coach/'+ uid).once('value', function(snapshot){
+					
+			//se esta no nó users-coach, retorna erro no login
+			if(snapshot.val()){
+
+				localStorage.setItem("coach", 1);
+			}	
+			else{
+				localStorage.setItem("coach", 0);
+			}
+		});
+		name = ""
 
 		swal({
 			html: 'Login efetuado com sucesso!',
@@ -26,13 +40,17 @@ $('#logar').on('click', function () {
 				window.location.href = 'home.html';
 			}
 		});
-		
-		
-		/*var uid = firebase.auth().currentUser.uid;
-		firebase.database().ref('users/' + uid ).set({nome: $('#nome').val()});*/
-		
-		
-		
+
+		firebase.database().ref('pessoa/' + uid ).once("value", function(snapshot){
+
+
+			localStorage.setItem("userName", snapshot.val().nome);
+		}).then((name)=>{
+
+
+
+		});
+
 		
 
 	}).catch(function(error) {

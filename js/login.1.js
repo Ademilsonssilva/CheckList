@@ -19,10 +19,21 @@ $('#logar').on('click', function () {
 
 		var uid = firebase.auth().currentUser.uid;
 
+		alert(uid)
 
-		fdb.ref('users/'+ uid).once('value').then(function(snapshot){
+		fdb.ref('users-coach/'+ uid).once('value').then(function(snapshot){
 			
-			alert(snapshot.val().coach)
+			if(!snapshot.val()){
+				swal({
+					html: 'Usuario não encontrado',
+					type: 'error',
+					toast: true,
+					timer: 2500
+					
+				});
+			}
+
+			return;
 
 		});
 
