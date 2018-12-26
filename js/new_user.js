@@ -31,7 +31,7 @@ $('#cadastrar').on('click', function () {
 		var uid = firebase.auth().currentUser.uid;
 		
 		firebase.database().ref('pessoa/' + uid ).set({nome: $('#nome').val()});
-		firebase.database().ref('users-coach/' + uid ).set(true);
+		//firebase.database().ref('users-coach/' + uid ).set(true);
 		
 
 	}).catch(function(error) {
